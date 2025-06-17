@@ -53,13 +53,13 @@ sccosmix(formula, data, offset1, offset2)
 ```
 Parameters:
 * `formula`: A list of seven formula objects specifying the covariate-dependence of the different parameters.
-  * `[[1]]`: Covariate-dependence of $\mu_1$
-  * `[[2]]`: Covariate-dependence of $\mu_2$
-  * `[[3]]`: Covariate-dependence of $\sigma_1$
-  * `[[4]]`: Covariate-dependence of $\sigma_2$
-  * `[[5]]`: Covariate-dependence of $\rho$
-  * `[[6]]`: Covariate-dependence of $p_1$
-  * `[[7]]`: Covariate-dependence of $p_2$
+  * `[[1]]`: Covariate-dependence and random effects structure of $\mu_1$
+  * `[[2]]`: Covariate-dependence and random effects structure of $\mu_2$
+  * `[[3]]`: Covariate-dependence and random effects structure of $\sigma_1$
+  * `[[4]]`: Covariate-dependence and random effects structure of $\sigma_2$
+  * `[[5]]`: Covariate-dependence and random effects structure of $\rho$
+  * `[[6]]`: Covariate-dependence and random effects structure of $p_1$
+  * `[[7]]`: Covariate-dependence and random effects structure of $p_2$
 * `data`: A data.frame whose column names correspond to the variables referenced in the formula list.
 * `offset1`, `offset2`: Vectors containing the $\log(S_i)$ offset terms.
 
