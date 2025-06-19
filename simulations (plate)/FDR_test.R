@@ -445,7 +445,43 @@ for (j in 1:length(dataset_list)){
 }
 
 
-retmat
 
+
+grid <- 0:100 / 100
+
+methods <- unique(retmat$method)
+
+
+qq_list <- lapply(methods, function(meth) {
+
+  df <- retmat %>% filter(method == meth)
+
+  pvals <- df %>% select(-method, -b)
+
+  quant_matrix <- apply(pvals, 1, function(vec) quantile(vec, grid, na.rm = TRUE))
+
+  mean_quant <- rowMeans(quant_matrix)
+
+  data.frame(
+    method = meth,
+    theoq = grid,
+    empq = mean_quant
+  )
+})
+
+qq_df <- bind_rows(qq_list)
+
+library(ggplot2)
+
+ggplot(qq_df, aes(x = theoq, y = empq)) +
+  geom_line() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  facet_wrap(~ method, scales = "fixed", nrow = 1) +
+  labs(
+    x = "Theoretical quantile",
+    y = "Empirical quantile",
+    title = "Q-Q Plots by Method"
+  ) +
+  theme_minimal()
 
 
