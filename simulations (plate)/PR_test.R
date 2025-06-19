@@ -482,8 +482,66 @@ for (j in 1:length(dataset_list)){
 }
 
 
-retmat
 
-sigpair_mat 
+
+                        
+library(PRROC)
+library(ggplot2)
+
+mask <- sigpair_mat[1, ]
+
+pospairs <- names(mask)[mask == 1]
+negpairs <- names(mask)[mask == 0]
+
+common_recall <- seq(0, 1, length.out = 200)
+
+pr_list <- vector("list", nrow(retmat))
+
+for (i in seq_len(nrow(retmat))) {
+  row <- retmat[i, ]
+
+  pvals <- as.numeric(row[ , -(1:2)])
+  names(pvals) <- names(row)[-(1:2)]
+
+  pr <- pr.curve(
+    scores.class0 = 1 - pvals[pospairs],
+    scores.class1 = 1 - pvals[negpairs],
+    curve = TRUE
+  )
+
+  interp_prec <- approx(
+    x = pr$curve[, 1],
+    y = pr$curve[, 2],
+    xout = common_recall,
+    rule = 2
+  )$y
+
+  pr_list[[i]] <- data.frame(
+    method = row$method,
+    b = row$b,
+    recall = common_recall,
+    precision = interp_prec
+  )
+}
+
+pr_all <- do.call(rbind, pr_list)
+
+pr_mean <- pr_all %>%
+  group_by(method, recall) %>%
+  summarise(
+    mean_precision = mean(precision, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(pr_mean, aes(x = recall, y = mean_precision, color = method)) +
+  geom_line(linewidth = 1) +
+  theme_minimal() +
+  labs(
+    title = "Mean PR Curve per Method",
+    x = "Recall",
+    y = "Mean Precision"
+  )
+
+
 
 
